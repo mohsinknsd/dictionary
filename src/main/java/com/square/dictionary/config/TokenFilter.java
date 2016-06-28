@@ -24,7 +24,7 @@ public class TokenFilter implements Filter{
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
         chain.doFilter(req, res);		
-		
+		 //token security
 	}
 
 	public void init(FilterConfig arg0) throws ServletException {
