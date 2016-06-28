@@ -7,5 +7,5 @@ import com.square.dictionary.model.Word;
 public interface WordService {
 	Word findWordById(String id);
 	Word findWordByName(String name);
-	List<Word> findWordsByCategory(String category);
+	List<Word> findWordsByCategory(String userId, String category);
 }

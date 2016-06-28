@@ -1,7 +1,8 @@
 package com.square.dictionary.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import static com.square.dictionary.model.Constants.MESSAGE;
+import static com.square.dictionary.model.Constants.STATUS;
+
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.square.dictionary.model.User;
 import com.square.dictionary.service.UserService;
+import com.square.dictionary.util.AppUtils;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -25,16 +27,10 @@ public class AuthRestController {
 
 	@Autowired
 	UserService userService;
-		
-	private static final String STATUS = "status";
-	private static final String MESSAGE = "message";
-	
-	private static final Map<Integer, String> tokens = new HashMap<>();
 	
 	//Initializing GSON
-	private static Gson gson; 
-	static {
-		gson = new GsonBuilder().setPrettyPrinting().create();
+	private static Gson gson; static {
+		gson = new GsonBuilder().setPrettyPrinting().create();		
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,27 +44,21 @@ public class AuthRestController {
 		} else {
 			user = userService.loginIfExist(email, password);
 			if (user != null && user.getId() > 0) {
+				String token = UUID.randomUUID().toString();
 				object = gson.toJsonTree(user).getAsJsonObject();
-				tokens.put(user.getId(), UUID.randomUUID().toString());
+				AppUtils.getSession().setAttribute(String.valueOf(user.getId()), token);
 				JsonObject o = (JsonObject) gson.toJsonTree(user);
-				o.addProperty("token", tokens.get(user.getId()));
+				o.addProperty("token", token);
 				return new ResponseEntity<String>(gson.toJson(o), HttpStatus.OK);
 			}
 			object.addProperty(STATUS, true);
-			object.addProperty(MESSAGE, "No user exists with the email " + email);
+			object.addProperty(MESSAGE, "Either email address or password is incorrect");
 			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
-		}		
+		}
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> login() {		
-		return unsupported();
-	}
-		
-	private ResponseEntity<String> unsupported() {
-		JsonObject object = new JsonObject();
-		object.addProperty(STATUS, false);		
-		object.addProperty(MESSAGE, "Sorry! Get method is not supported by this resource");				
-		return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
-	}
+		return AppUtils.getUnsupportedResponse(gson, "Get request");
+	}	
 }
