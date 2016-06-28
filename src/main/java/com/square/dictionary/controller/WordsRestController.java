@@ -21,7 +21,7 @@ import com.square.dictionary.service.WordService;
 
 @RestController
 @RequestMapping(value = "/apis")
-public class WebRestController {
+public class WordsRestController {
 
 	@Autowired
 	WordService wordService;
@@ -81,7 +81,7 @@ public class WebRestController {
 	private ResponseEntity<String> unsupported() {
 		JsonObject object = new JsonObject();
 		object.addProperty(STATUS, false);		
-		object.addProperty(MESSAGE, "Sorry! Get method is not supported by this api");				
+		object.addProperty(MESSAGE, "Sorry! Get method is not supported by this resource");				
 		return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
 	}
 }

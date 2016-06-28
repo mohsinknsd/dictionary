@@ -1,22 +1,23 @@
 package com.square.dictionary.model;
 
 import java.util.Date;
+import org.hibernate.annotations.Type;
 
 public class User {
 	private int id;
-	private String frstName;
+	private String firstName;
+	private String lastName;
 	private String email;
-	private String password;
-	private byte gender;
+	@Type(type = "numeric_boolean")
+	private boolean gender;
 	private String mobile;
 	private String address;
 	private String city;
 	private String state;
-	private String country;
-	private boolean verified;
-	private Date reg_date;
+	private String country;	
+	private Date regDate;
 	private byte status;	
-	
+
 	public synchronized int getId() {
 		return id;
 	}
@@ -25,12 +26,20 @@ public class User {
 		this.id = id;
 	}
 
-	public synchronized String getFrstName() {
-		return frstName;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public synchronized void setFrstName(String frstName) {
-		this.frstName = frstName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public synchronized String getEmail() {
@@ -41,19 +50,11 @@ public class User {
 		this.email = email;
 	}
 
-	public synchronized String getPassword() {
-		return password;
-	}
-
-	public synchronized void setPassword(String password) {
-		this.password = password;
-	}
-
-	public synchronized byte getGender() {
+	public synchronized boolean getGender() {
 		return gender;
 	}
 
-	public synchronized void setGender(byte gender) {
+	public synchronized void setGender(boolean gender) {
 		this.gender = gender;
 	}
 
@@ -97,20 +98,12 @@ public class User {
 		this.country = country;
 	}
 
-	public synchronized boolean isVerified() {
-		return verified;
+	public Date getRegDate() {
+		return regDate;
 	}
 
-	public synchronized void setVerified(boolean verified) {
-		this.verified = verified;
-	}
-
-	public synchronized Date getReg_date() {
-		return reg_date;
-	}
-
-	public synchronized void setReg_date(Date reg_date) {
-		this.reg_date = reg_date;
+	public void setRegDate(Date regDate) {
+		this.regDate = regDate;
 	}
 
 	public synchronized byte getStatus() {
@@ -129,21 +122,15 @@ public class User {
 		result = prime * result + ((city == null) ? 0 : city.hashCode());
 		result = prime * result + ((country == null) ? 0 : country.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result
-				+ ((frstName == null) ? 0 : frstName.hashCode());
-		result = prime * result + gender;
+		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());		
 		result = prime * result + id;
 		result = prime * result + ((mobile == null) ? 0 : mobile.hashCode());
-		result = prime * result
-				+ ((password == null) ? 0 : password.hashCode());
-		result = prime * result
-				+ ((reg_date == null) ? 0 : reg_date.hashCode());
+		result = prime * result + ((regDate == null) ? 0 : regDate.hashCode());
 		result = prime * result + ((state == null) ? 0 : state.hashCode());
 		result = prime * result + status;
-		result = prime * result + (verified ? 1231 : 1237);
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -173,10 +160,10 @@ public class User {
 				return false;
 		} else if (!email.equals(other.email))
 			return false;
-		if (frstName == null) {
-			if (other.frstName != null)
+		if (firstName == null) {
+			if (other.firstName != null)
 				return false;
-		} else if (!frstName.equals(other.frstName))
+		} else if (!firstName.equals(other.firstName))
 			return false;
 		if (gender != other.gender)
 			return false;
@@ -187,15 +174,11 @@ public class User {
 				return false;
 		} else if (!mobile.equals(other.mobile))
 			return false;
-		if (password == null) {
-			if (other.password != null)
+
+		if (regDate == null) {
+			if (other.regDate != null)
 				return false;
-		} else if (!password.equals(other.password))
-			return false;
-		if (reg_date == null) {
-			if (other.reg_date != null)
-				return false;
-		} else if (!reg_date.equals(other.reg_date))
+		} else if (!regDate.equals(other.regDate))
 			return false;
 		if (state == null) {
 			if (other.state != null)
@@ -204,18 +187,13 @@ public class User {
 			return false;
 		if (status != other.status)
 			return false;
-		if (verified != other.verified)
-			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", frstName=" + frstName + ", email=" + email
-				+ ", password=" + password + ", gender=" + gender + ", mobile="
-				+ mobile + ", address=" + address + ", city=" + city
-				+ ", state=" + state + ", country=" + country + ", verified="
-				+ verified + ", reg_date=" + reg_date + ", status=" + status
-				+ "]";
+		return "User [id=" + id + ", frstName=" + firstName + ", email=" + email + ", gender="
+				+ gender + ", mobile=" + mobile + ", address=" + address + ", city=" + city + ", state=" + state
+				+ ", country=" + country + ", regDate=" + regDate + ", status=" + status + "]";
 	}
 }
