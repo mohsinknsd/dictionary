@@ -16,8 +16,7 @@ public class HibernateUtils {
 		try {
 			Properties properties = new Properties(); 
 			properties.load(WordServiceImpl.class.getClassLoader().getResourceAsStream("/config.properties"));
-			configuration = new Configuration().setProperties(properties);
-			
+			configuration = new Configuration().setProperties(properties);			
 		} catch (IOException e) {			
 			e.printStackTrace();
 		}

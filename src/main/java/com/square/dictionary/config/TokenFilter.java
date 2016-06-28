@@ -29,22 +29,16 @@ public class TokenFilter implements Filter{
 		HttpServletRequest request = (HttpServletRequest) req;
 		String resource = request.getRequestURI().substring(1);
 		System.out.println(resource);
-		
 		//If request is for token or web application then allow otherwise check token for apis in else block
 		if (resource.equals("/dictionary/auth/login") || resource.equals("/dictionary/app")) {
 			chain.doFilter(req, res);        	
 		} else {
-			try {
-				if (req.getParameter("token") != null 
-						|| req.getParameter("token").equals("")
-						|| req.getParameter("token").equals(AppUtils.getSession().getAttribute(req.getParameter("userId")))) {
-					chain.doFilter(req, res);            		
-				} else {
-					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are not authorized for the request!");
-				}	
-			} catch (NullPointerException e) {        		
+			String token = request.getHeader("Authorization");
+			if (token != null && token.equals(AppUtils.getSession().getAttribute(req.getParameter("userId")))) {
+				chain.doFilter(req, res);            		
+			} else {
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are not authorized for the request!");
-			}
+			}			
 		}        
 	}
 

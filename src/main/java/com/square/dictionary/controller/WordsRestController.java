@@ -36,32 +36,27 @@ public class WordsRestController {
 
 	@RequestMapping(value = "/details", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> getDetails(@RequestParam(required = false) String userId, 
-			@RequestParam(required = false) String token, @RequestParam(required = false) String name) {
+			@RequestParam(required = false) String token, @RequestParam(required = false) String name) {		
 		
 		JsonObject object = new JsonObject();
 		object.addProperty(STATUS, false);
-		
-		//Security Check
-		Object t = AppUtils.getSession().getAttribute(userId); 
-		if (t == null || !t.toString().equals(token)) {			
-			object.addProperty(MESSAGE, "Unauthorized user");
-			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.UNAUTHORIZED);
-		}
 		
 		//Request Validations
 		if (name == null || name.trim().equals("")) {			
 			object.addProperty(MESSAGE, "Name that is word's title, can't be null or empty");
 			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
-		}
-		
-		Word word = new Word();
-		word = wordService.findWordByName(name);
-		if (word != null) {				
-			object = gson.toJsonTree(word).getAsJsonObject();									
-		}			
-		object.addProperty(STATUS, true);
-		object.addProperty(MESSAGE, (word != null && word.getName() != null) ? "Successful" : "No data found for the word " + name);
-		return new ResponseEntity<String>(gson.toJson(word), HttpStatus.OK);
+		} else {
+			Word word = wordService.findWordByName(name);			
+			if (word != null) {
+				JsonObject wordJson = (JsonObject) gson.toJsonTree(word);
+				wordJson.addProperty(MESSAGE, "Request Granted");
+				wordJson.addProperty(STATUS, true);
+				return new ResponseEntity<String>(gson.toJson(wordJson), HttpStatus.OK);
+			} else {
+				object.addProperty(MESSAGE, "No details found for " + name);
+				return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
+			}
+		}		
 	}
 
 	@RequestMapping(value = "/details", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -74,30 +69,23 @@ public class WordsRestController {
 			@RequestParam(required = false) String token, @RequestParam(required = false) String category) {
 		JsonObject object = new JsonObject();
 		object.addProperty(STATUS, false);
-
-		//Security Check
-		Object t = AppUtils.getSession().getAttribute(userId); 
-		if (t == null || !t.toString().equals(token)) {			
-			object.addProperty(MESSAGE, "Unauthorized user");
-			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.UNAUTHORIZED);
-		}
-
-		//Request Validations
 		if (category == null || category.trim().equals("")) {
-			object.addProperty(MESSAGE, "Category can't be null or empty");	
-			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
-		} 
-
-		//Publishing Results
-		List<Word> words = wordService.findWordsByCategory(userId, category);
-		object.addProperty(STATUS, true);		
-		object.addProperty(MESSAGE, (words.isEmpty()) ? "No records found for category " + category : "Successful");		
-		object.add("words", gson.toJsonTree(words, new TypeToken<List<Word>>() {}.getType()));
+			object.addProperty(MESSAGE, "Category can't be null or empty");
+		} else {
+			List<Word> words = wordService.findWordsByCategory(userId, category);
+			if (!words.isEmpty()) {
+				object.addProperty(STATUS, true);
+				object.addProperty(MESSAGE, "Request Granted");
+				object.add("words", gson.toJsonTree(words, new TypeToken<List<Word>>() {}.getType()));
+			} else {
+				object.addProperty(MESSAGE, "Either this service is not subscribed or the category is invalid");
+			}
+		}
 		return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> listAllWords() {		
+	public ResponseEntity<String> listAllWords() {
 		return AppUtils.getUnsupportedResponse(gson, "Get request");
 	}
 }

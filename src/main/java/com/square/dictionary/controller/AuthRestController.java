@@ -30,30 +30,30 @@ public class AuthRestController {
 	
 	//Initializing GSON
 	private static Gson gson; static {
-		gson = new GsonBuilder().setPrettyPrinting().create();		
+		gson = new GsonBuilder().setPrettyPrinting().create();
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> login(@RequestParam(required = false) String email, @RequestParam(required = false) String password) {
 		User user = new User();
 		JsonObject object = new JsonObject();
-		if (email == null || email.trim().equals("") || password == null || password.trim().equals("")) {
-			object.addProperty(STATUS, false);
+		object.addProperty(STATUS, false);
+		if (email == null || email.trim().equals("") || password == null || password.trim().equals("")) {			
 			object.addProperty(MESSAGE, "Email address or password can not be null or empty");
 			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
 		} else {
-			user = userService.loginIfExist(email, password);
+			user = userService.getUserDetails(email, password);
 			if (user != null && user.getId() > 0) {
 				String token = UUID.randomUUID().toString();
 				object = gson.toJsonTree(user).getAsJsonObject();
 				AppUtils.getSession().setAttribute(String.valueOf(user.getId()), token);
-				JsonObject o = (JsonObject) gson.toJsonTree(user);
-				o.addProperty("token", token);
-				return new ResponseEntity<String>(gson.toJson(o), HttpStatus.OK);
-			}
-			object.addProperty(STATUS, true);
-			object.addProperty(MESSAGE, "Either email address or password is incorrect");
-			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
+				JsonObject userJson = (JsonObject) gson.toJsonTree(user);
+				userJson.addProperty("token", token);
+				return new ResponseEntity<String>(gson.toJson(userJson), HttpStatus.OK);
+			} else {				
+				object.addProperty(MESSAGE, "Either email address or password is incorrect");
+				return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);	
+			}			
 		}
 	}
 	

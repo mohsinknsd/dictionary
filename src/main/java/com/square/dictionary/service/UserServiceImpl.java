@@ -16,13 +16,13 @@ import com.square.dictionary.util.Log;
 public class UserServiceImpl implements UserService{
 
 	@Override
-	public User loginIfExist(String email, String password) {		
+	public User getUserDetails(String email, String password) {		
 		Session session = null;
 		User user = new User();
 		try {
 			session = HibernateUtils.getSession();
 			session.beginTransaction();
-			Query procedure = session.createSQLQuery("call get_user(:email, :password)")
+			Query procedure = session.createSQLQuery("call sp_get_user_details (:email, :password)")
 					.setParameter("email", email).setParameter("password", password);
 			procedure.setResultTransformer(Transformers.aliasToBean(User.class));		
 			user = (User) procedure.uniqueResult();			

@@ -24,7 +24,7 @@ public class WordServiceImpl implements WordService {
 		try {
 			session = HibernateUtils.getSession();
 			session.beginTransaction();
-			Query procedure = session.createSQLQuery("call get_details_by_id (:id)")
+			Query procedure = session.createSQLQuery("call sp_get_details_by_id (:id)")
 					.setParameter("id", id);
 			procedure.setResultTransformer(Transformers.aliasToBean(Word.class));		
 			word = (Word) procedure.uniqueResult();			
@@ -44,7 +44,7 @@ public class WordServiceImpl implements WordService {
 		try {
 			session = HibernateUtils.getSession();
 			session.beginTransaction();
-			Query procedure = session.createSQLQuery("call get_details_by_name (:name)")
+			Query procedure = session.createSQLQuery("call sp_get_details_by_name (:name)")
 					.setParameter("name", name);
 			procedure.setResultTransformer(Transformers.aliasToBean(Word.class));		
 			word = (Word) procedure.uniqueResult();			
@@ -65,7 +65,7 @@ public class WordServiceImpl implements WordService {
 		try {
 			session = HibernateUtils.getSession();
 			session.beginTransaction();
-			Query procedure = session.createSQLQuery("call get_words_by_category (:user_id, :category)")
+			Query procedure = session.createSQLQuery("call sp_get_words_by_category (:user_id, :category)")
 					.setParameter("user_id", Integer.parseInt(userId)).setParameter("category", category);				
 			procedure.setResultTransformer(Transformers.aliasToBean(Word.class));		
 			words = procedure.list();			
