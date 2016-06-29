@@ -3,6 +3,7 @@ package com.square.dictionary.controller;
 import static com.square.dictionary.model.Constants.MESSAGE;
 import static com.square.dictionary.model.Constants.STATUS;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class AuthRestController {
 				JsonObject userJson = (JsonObject) gson.toJsonTree(user);
 				userJson.addProperty("token", token);
 				return new ResponseEntity<String>(gson.toJson(userJson), HttpStatus.OK);
-			} else {				
+			} else {
 				object.addProperty(MESSAGE, "Either email address or password is incorrect");
 				return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);	
 			}			
@@ -59,6 +60,46 @@ public class AuthRestController {
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> login() {		
+		return AppUtils.getUnsupportedResponse(gson, "Get request");
+	}
+	//:firstname, :lastname, :email, :password, :gender, :mobile, :address, :city, :state, :country
+	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> register(@RequestParam(required = false) String firstname, @RequestParam(required = false) String lastname,
+			@RequestParam(required = false) String email, 	@RequestParam(required = false) String password,
+			@RequestParam(required = false) String gender, 	@RequestParam(required = false) String mobile, 
+			@RequestParam(required = false) String address, @RequestParam(required = false) String city, 
+			@RequestParam(required = false) String state, 	@RequestParam(required = false) String country) {
+		
+		User user = new User();
+		user.setFirstName(firstname);
+		user.setLastName(lastname);
+		user.setEmail(email);
+		user.setPassword(password);
+		user.setGender(gender.trim().equals("1"));
+		user.setMobile(mobile);
+		user.setAddress(address);
+		user.setCity(city);
+		user.setState(state);
+		user.setCountry(country);
+		user.setRegDate(new Date());
+		
+		JsonObject object = new JsonObject();
+		object.addProperty(STATUS, false);
+		
+		if (user.getEmail() == null) {			
+			object.addProperty(MESSAGE, "Invalid properties");
+			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
+		} else {
+			boolean isRegistered = userService.registerNewUser(user);
+			object.addProperty(STATUS, isRegistered);
+			object.addProperty(MESSAGE, isRegistered ? user.getFirstName() + " " + user.getLastName() + " has been registered successfully"
+					: "Unable to register new user. Please try again");			
+			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
+		}
+	}
+	
+	@RequestMapping(value = "/register", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> register() {		
 		return AppUtils.getUnsupportedResponse(gson, "Get request");
 	}	
 }

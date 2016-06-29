@@ -8,14 +8,12 @@ import org.hibernate.Session;
 import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.square.dictionary.model.Word;
 import com.square.dictionary.util.HibernateUtils;
 import com.square.dictionary.util.Log;
 
 @Service("WordService")
-@Transactional
 public class WordServiceImpl implements WordService {
 
 	public Word findWordById(String id) {

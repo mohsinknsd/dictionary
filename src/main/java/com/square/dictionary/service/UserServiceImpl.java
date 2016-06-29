@@ -2,8 +2,10 @@ package com.square.dictionary.service;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +16,8 @@ import com.square.dictionary.util.Log;
 @Service("UserService")
 @Transactional
 public class UserServiceImpl implements UserService{
-
+	@Autowired
+	private SessionFactory sessionFactory;
 	@Override
 	public User getUserDetails(String email, String password) {		
 		Session session = null;
@@ -25,7 +28,7 @@ public class UserServiceImpl implements UserService{
 			Query procedure = session.createSQLQuery("call sp_get_user_details (:email, :password)")
 					.setParameter("email", email).setParameter("password", password);
 			procedure.setResultTransformer(Transformers.aliasToBean(User.class));		
-			user = (User) procedure.uniqueResult();			
+			user = (User) procedure.uniqueResult();	
 			session.getSessionFactory().close();
 		} catch (JDBCConnectionException e) {			
 			Log.e(WordServiceImpl.class, e);
@@ -34,5 +37,24 @@ public class UserServiceImpl implements UserService{
 				session.close();
 		}				
 		return user;
+	}
+
+	@Override	
+	public boolean registerNewUser(User user) {
+		
+		Session session = null;		
+		try {
+			session = sessionFactory.getCurrentSession();
+			System.out.println(user);			
+			 
+			int isResigtered = (int) session.save(user);
+			session.getTransaction().commit();
+			//session.getSessionFactory().close();		
+			System.out.println(isResigtered + " Record's Id");
+			return (isResigtered> 0) ? true : false;			
+		} catch (JDBCConnectionException e) {			
+			Log.e(WordServiceImpl.class, e);
+			return false;
+		}
 	}
 }

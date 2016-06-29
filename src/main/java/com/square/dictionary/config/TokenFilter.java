@@ -30,7 +30,9 @@ public class TokenFilter implements Filter{
 		String resource = request.getRequestURI().substring(1);
 		System.out.println(resource);
 		//If request is for token or web application then allow otherwise check token for apis in else block
-		if (resource.equals("/dictionary/auth/login") || resource.equals("/dictionary/app")) {
+		if (resource.equals("/dictionary/auth/login") 
+				|| resource.equals("/dictionary/auth/register")
+				|| resource.equals("/dictionary/app")) {
 			chain.doFilter(req, res);        	
 		} else {
 			String token = request.getHeader("Authorization");
@@ -38,8 +40,8 @@ public class TokenFilter implements Filter{
 				chain.doFilter(req, res);            		
 			} else {
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are not authorized for the request!");
-			}			
-		}        
+			}
+		}
 	}
 
 	public void init(FilterConfig arg0) throws ServletException {

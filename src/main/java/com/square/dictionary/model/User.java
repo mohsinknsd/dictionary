@@ -1,22 +1,59 @@
 package com.square.dictionary.model;
 
 import java.util.Date;
-import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.util.DigestUtils;
+
+@Entity
+@Table(name="users")
 public class User {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
+	@Column(name = "first_name", nullable = false)
 	private String firstName;
+	
+	@Column(name = "last_name", nullable = false)
 	private String lastName;
+	
+	@Column(name = "email", nullable = false)
 	private String email;
-	@Type(type = "numeric_boolean")
+	
+	@Column(name = "password", nullable = false)
+	private String password;
+	
+//	@Type(type = "numeric_boolean")
+	@Column(name = "gender", nullable = false, columnDefinition = "BIT(1)")
 	private boolean gender;
+	
+	@Column(name = "mobile", nullable = false)
 	private String mobile;
+	
+	@Column(name = "address", nullable = false)
 	private String address;
+	
+	@Column(name = "city", nullable = false)
 	private String city;
+	
+	@Column(name = "state", nullable = false)
 	private String state;
-	private String country;	
+	
+	@Column(name = "country", nullable = false)
+	private String country;
+	
+	@Column(name = "reg_date", nullable = false)
 	private Date regDate;
-	private byte status;	
+	
+	@Column(name = "status", nullable = false)
+	private byte status;
 
 	public synchronized int getId() {
 		return id;
@@ -48,6 +85,14 @@ public class User {
 
 	public synchronized void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {		
+		this.password = new String(DigestUtils.md5Digest(password.getBytes()));
 	}
 
 	public synchronized boolean getGender() {
@@ -122,9 +167,12 @@ public class User {
 		result = prime * result + ((city == null) ? 0 : city.hashCode());
 		result = prime * result + ((country == null) ? 0 : country.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());		
+		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + (gender ? 1231 : 1237);
 		result = prime * result + id;
+		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
 		result = prime * result + ((mobile == null) ? 0 : mobile.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((regDate == null) ? 0 : regDate.hashCode());
 		result = prime * result + ((state == null) ? 0 : state.hashCode());
 		result = prime * result + status;
@@ -169,12 +217,21 @@ public class User {
 			return false;
 		if (id != other.id)
 			return false;
+		if (lastName == null) {
+			if (other.lastName != null)
+				return false;
+		} else if (!lastName.equals(other.lastName))
+			return false;
 		if (mobile == null) {
 			if (other.mobile != null)
 				return false;
 		} else if (!mobile.equals(other.mobile))
 			return false;
-
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
 		if (regDate == null) {
 			if (other.regDate != null)
 				return false;
@@ -192,8 +249,9 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", frstName=" + firstName + ", email=" + email + ", gender="
-				+ gender + ", mobile=" + mobile + ", address=" + address + ", city=" + city + ", state=" + state
-				+ ", country=" + country + ", regDate=" + regDate + ", status=" + status + "]";
+		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", password=" + password + ", gender=" + gender + ", mobile=" + mobile + ", address=" + address
+				+ ", city=" + city + ", state=" + state + ", country=" + country + ", regDate=" + regDate + ", status="
+				+ status + "]";
 	}
 }
