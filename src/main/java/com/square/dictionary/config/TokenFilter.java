@@ -32,6 +32,7 @@ public class TokenFilter implements Filter{
 		//If request is for token or web application then allow otherwise check token for apis in else block
 		if (resource.equals("/dictionary/auth/login") 
 				|| resource.equals("/dictionary/auth/register")
+				|| resource.equals("/dictionary/mail")
 				|| resource.equals("/dictionary/app")) {
 			chain.doFilter(req, res);        	
 		} else {

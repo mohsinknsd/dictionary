@@ -3,6 +3,7 @@ package com.square.dictionary.service;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +43,16 @@ public class UserServiceImpl implements UserService{
 	@Override	
 	public boolean registerNewUser(User user) {
 		
-		Session session = null;		
+		Session session = sessionFactory.openSession();
+		Transaction transaction = null;
 		try {
-			session = sessionFactory.getCurrentSession();
-			System.out.println(user);			
-			 
+			transaction = session.beginTransaction();
 			int isResigtered = (int) session.save(user);
-			session.getTransaction().commit();
-			//session.getSessionFactory().close();		
-			System.out.println(isResigtered + " Record's Id");
+			transaction.commit();			
 			return (isResigtered> 0) ? true : false;			
-		} catch (JDBCConnectionException e) {			
+		} catch (Exception e) {
+			transaction.rollback();
+			if (session.isOpen()) session.close();
 			Log.e(WordServiceImpl.class, e);
 			return false;
 		}

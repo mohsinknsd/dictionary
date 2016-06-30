@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.square.dictionary.mail.JavaMailClient;
 import com.square.dictionary.model.User;
 import com.square.dictionary.service.UserService;
 import com.square.dictionary.util.AppUtils;
@@ -86,11 +87,12 @@ public class AuthRestController {
 		JsonObject object = new JsonObject();
 		object.addProperty(STATUS, false);
 		
-		if (user.getEmail() == null) {			
+		if (user.getEmail() == null) {
 			object.addProperty(MESSAGE, "Invalid properties");
 			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
-		} else {
+		} else {			
 			boolean isRegistered = userService.registerNewUser(user);
+			JavaMailClient.sendConfirmationMail(user.getFirstName(), user.getEmail().trim());
 			object.addProperty(STATUS, isRegistered);
 			object.addProperty(MESSAGE, isRegistered ? user.getFirstName() + " " + user.getLastName() + " has been registered successfully"
 					: "Unable to register new user. Please try again");			
