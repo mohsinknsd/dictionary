@@ -99,7 +99,7 @@ public class Log {
 			//now loading all messages
 			//messages.load(new FileReader(new File("resources/messages.properties")));
 			messages.load(Log.class.getResourceAsStream("/messages.properties"));
-		} catch (IOException | ExceptionInInitializerError e) {			
+		} catch (Exception e) {			
 			e.printStackTrace();
 		}
 	}
@@ -213,11 +213,13 @@ public class Log {
 			File file = new File(path);
 			file.mkdirs();
 			Calendar c = Calendar.getInstance();
-			try (FileWriter writer = new FileWriter(new File(file,
-					((log.contains(ERR) || log.contains(WRN)) ? "ERR LOGS " : "INFO LOGS ") 
-					+ c.get(Calendar.DAY_OF_MONTH) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.YEAR) + ".LOG"
-					), true)) {
+			try {
+				FileWriter writer = new FileWriter(new File(file,
+						((log.contains(ERR) || log.contains(WRN)) ? "ERR LOGS " : "INFO LOGS ") 
+						+ c.get(Calendar.DAY_OF_MONTH) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.YEAR) + ".LOG"
+						), true);
 				writer.write(log);
+				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 

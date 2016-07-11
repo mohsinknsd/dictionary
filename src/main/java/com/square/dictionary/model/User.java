@@ -92,7 +92,7 @@ public class User {
 	}
 
 	public void setPassword(String password) {		
-		this.password = new String(DigestUtils.md5Digest(password.getBytes()));
+		this.password = DigestUtils.md5DigestAsHex(password.getBytes());
 	}
 
 	public synchronized boolean getGender() {
