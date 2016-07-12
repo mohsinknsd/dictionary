@@ -33,7 +33,7 @@ public class WordServiceImpl implements WordService {
 		} catch (Exception e) {
 			transaction.rollback();
 			if (session.isOpen()) session.close();
-			Log.e(WordServiceImpl.class, e);			
+			Log.e(e);			
 		}		
 		return word;
 	}
@@ -52,7 +52,7 @@ public class WordServiceImpl implements WordService {
 		} catch (Exception e) {
 			transaction.rollback();
 			if (session.isOpen()) session.close();
-			Log.e(WordServiceImpl.class, e);			
+			Log.e(e);			
 		}
 		return word;
 	}
@@ -72,7 +72,7 @@ public class WordServiceImpl implements WordService {
 		} catch (Exception e) {
 			transaction.rollback();
 			if (session.isOpen()) session.close();
-			Log.e(WordServiceImpl.class, e);			
+			Log.e(e);			
 		}	
 		return words;
 	}

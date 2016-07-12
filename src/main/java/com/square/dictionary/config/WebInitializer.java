@@ -9,7 +9,7 @@ import com.square.dictionary.util.Log;
 public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 	@Override
     protected Class<?>[] getRootConfigClasses() {
-		Log.i(getClass(), "system.initialization");
+		Log.i("system.initialization");
         return new Class[] { Webconfiguration.class };
     }
   

@@ -74,7 +74,7 @@ public class AuthRestController {
 	public ResponseEntity<String> login() {		
 		return AppUtils.getUnsupportedResponse(gson, "Get request");
 	}
-	//:firstname, :lastname, :email, :password, :gender, :mobile, :address, :city, :state, :country
+	
 	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> register(@RequestParam(required = false) String firstname, @RequestParam(required = false) String lastname,
 			@RequestParam(required = false) String email, 	@RequestParam(required = false) String password,
@@ -101,7 +101,7 @@ public class AuthRestController {
 		if (user.getEmail() == null) {
 			object.addProperty(MESSAGE, "Invalid properties");
 			return new ResponseEntity<String>(gson.toJson(object), HttpStatus.OK);
-		} else {			
+		} else {
 			boolean isRegistered = userService.registerNewUser(user);			
 			object.addProperty(STATUS, isRegistered);
 			

@@ -11,6 +11,6 @@ import com.square.dictionary.util.Log;
 @ComponentScan(basePackages = "com.square.dictionary")
 public class Webconfiguration {
 	{
-		Log.i(getClass(), "system.configuration");
+		Log.i("system.configuration");
 	}
 }

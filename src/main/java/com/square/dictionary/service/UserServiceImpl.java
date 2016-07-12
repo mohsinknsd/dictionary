@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService{
 		} catch (Exception e) {
 			transaction.rollback();
 			if (session.isOpen()) session.close();
-			Log.e(WordServiceImpl.class, e);			
+			Log.e(e);			
 		}				
 		return user;
 	}
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService{
 		} catch (Exception e) {
 			transaction.rollback();
 			if (session.isOpen()) session.close();
-			Log.e(WordServiceImpl.class, e);
+			Log.e(e);
 			return false;
 		}
 	}
